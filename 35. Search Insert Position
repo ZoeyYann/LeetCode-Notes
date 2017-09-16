@@ -1,0 +1,18 @@
+//二分法
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int low=0;
+        int high=nums.size()-1;
+            while(low<=high)     //注意(low <=high) 因为循环不变式 result落在[low,high+1]; 所以最后跳出循环后必须low>=high+1；使得low==high+1
+            {
+                int mid=(low+high)/2;
+                if(target<=nums[mid]) high=mid-1;
+                else low=mid+1;          
+            }
+        return low;
+    }
+};
+ 
+ 
+ 
