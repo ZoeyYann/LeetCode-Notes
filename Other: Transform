@@ -1,0 +1,77 @@
+transform(first1,last1,first2,result,binary_op);//first1是第一个容器的首迭代器，last1为第一个容器的末迭代器，first2为第二个容器的首迭代器，result为存放结果的容器，binary_op为要进行操作的二元函数对象或sturct、class。
+
+注意：第二个重载版本必须要保证两个容器的元素个数相等才行，否则会抛出异常。
+
+看一个例子：利用transform函数将一个给定的字符串中的小写字母改写成大写字母，并将结果保存在一个叫second的数组里，原字符串内容不变。
+我们只需要使用transform的第一个重载函数，当然我们也可以使用for_each函数来完成再copy几次就行了，现在来看一下代码：
+#include <iostream>
+#include <algorithm>
+using namespace std;
+char op(char ch)
+{
+    if(ch>='A'&&ch<='Z')
+        return ch+32;
+    else
+        return ch;
+}
+int main()
+{
+    string first,second;
+    cin>>first;
+    second.resize(first.size());
+    transform(first.begin(),first.end(),second.begin(),op);
+    cout<<second<<endl;
+    return 0;
+}
+
+再看一个例子：给你两个vector向量（元素个数相等），请你利用transform函数将两个vector的每个元素相乘，并输出相乘的结果。
+代码：
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+void print(int &elem){cout<<elem<<" ";}
+int op(int a,int b){return a*b;}
+int main()
+{
+    vector <int> A,B,SUM;
+    int n;
+    cin>>n;
+    for(int i=0;i<n;i++)
+    {
+        int t;
+        cin>>t;
+        A.push_back(t);
+    }
+    for(int i=0;i<n;i++)
+    {
+        int t;
+        cin>>t;
+        B.push_back(t);
+    }
+    SUM.resize(n);
+    transform(A.begin(),A.end(),B.begin(),SUM.begin(),op);
+    for_each(SUM.begin(),SUM.end(),print);
+    return 0;
+}
+输入：
+5
+1 2 3 4 5
+5 4 3 2 1
+输出：
+5 8 9 8 5
+
+再看一个网上的例子：
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <functional>
+using namespace std;
+class Print
+{
+public:
+    void operator () (int val)
+    {
+        cout << val << " " ;
+    }
+} ;
