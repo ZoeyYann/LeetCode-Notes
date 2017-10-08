@@ -1,0 +1,14 @@
+//对 int 类型 palindrome Number 逆序求和，等于对半比较
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if(x<0|| (x!=0 &&x%10==0)) return false;
+        int sum=0;
+        while(x>sum)
+        {
+            sum = sum*10+x%10;
+            x = x/10;
+        }
+        return (x==sum)||(x==sum/10);  // At this point x<=sum
+    }
+};
