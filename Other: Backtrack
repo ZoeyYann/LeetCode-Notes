@@ -7,7 +7,10 @@ public:
             res.push_back(tmp);
         for(int i=0;i<pool.size();i++){
             if(find(tmp.begin(),tmp.end(),pool[i])!=tmp.end()) continue; // E from pool alreasy exists in tmp
-            tmp.push_back(pool[i]);
+            ／* if(used[i] || i > 0 && pool[i] == pool[i-1] && !used[i - 1]) continue; 
+               // Eliminate Duplicates，Save used in vector
+             *／
+            tmp.push_back(pool[i]);
             backtrack(pool,res,tmp);
             tmp.pop_back();
         }
