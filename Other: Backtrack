@@ -1,4 +1,27 @@
 <Permutation>
+//自己第一次写的！！！！勉强算递归吧！！！啊啊写了三天C++作业毁掉的信心啊！好想哭！
+class Solution {
+public: 
+    void backtrack(vector<int> &pool,vector <vector<int>> &res,vector<int> tmp){
+        if(pool.size()==tmp.size()) 
+            res.push_back(tmp);
+        for(int i=0;i<pool.size();i++){
+            if(find(tmp.begin(),tmp.end(),pool[i])!=tmp.end()) continue; // E from pool alreasy exists in tmp
+            tmp.push_back(pool[i]);
+            backtrack(pool,res,tmp);
+            tmp.pop_back();
+        }
+    }
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        vector<int> tmp={};
+        backtrack(nums,res,tmp);
+        return res;
+    }
+};
+// If there are duplicates
+
+<Subset>
 ① 外层循环逐一往中间集合 temp 中加入元素 nums[i]，使这个元素处于存在状态
 ② 开始递归，递归中携带加入新元素的 temp，并且下一次循环的起始是 i 元素的下一个，因而递归中更新 i 值为 i + 1
 ③ 将这个从中间集合 temp 中移除，使该元素处于不存在状态
@@ -15,6 +38,7 @@ public:
     void genSubsets(vector<int>& nums, int start, vector<int>& sub, vector<vector<int>>& subs) {
         subs.push_back(sub);
         for (int i = start; i < nums.size(); i++) {
+            // if(i>start && nums[i]==nums[i-1]) continue;   // skip duplicates
             sub.push_back(nums[i]);
             genSubsets(nums, i + 1, sub, subs);
             sub.pop_back();
