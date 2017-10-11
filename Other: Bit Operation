@@ -1,0 +1,28 @@
+/* << 约等于*2 >>约等于/2 
+?负数右移可能会出错，先取绝对值再计算
+常见mask: 1111=pow(2,x)-1; 111111000000 则先用unsigned x = ~0,然后x <<= nPosition;
+*/
+
+1. Counting 1s;
+//思路：n-1会把n最后一位1变成0，后面的0全部变成1;迭代得到1的数量
+
+2. Altenating Bits
+//例如10101，1010 返回true 
+//思路：>>使得alternating positions对齐，异或得到一组11111
+//检测11111的方法 用x&x+1  巧妙！+1后后面的全部变0，与运算后变0
+bool hasAlternatingBits(int n) {
+    return !((n ^= n/2) & n+1);
+}
+3.counting Bits
+// For every numbers i in the range 0 ≤ i ≤ num calculate the number of 1's
+// For num = 5 you should return [0,1,1,2,1,2].
+// 思路: n&n-1后只剩下除掉最后一个1的前几位，所以等于前面1的个数+1；知道顺序可以用迭代
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        vector<int> ret(num+1, 0);
+        for (int i = 1; i <= num; ++i)
+            ret[i] = ret[i&(i-1)] + 1;
+        return ret;
+    }
+};
