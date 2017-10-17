@@ -1,0 +1,37 @@
+
+260. Single Number III
+Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.
+
+For example:
+Given nums = [1, 2, 1, 3, 2, 5], return [3, 5].
+/* 思路：先用accumulate把数组全部异或 得到不一样的两个数的异或结果，留住这个结果里最后一位1
+     用最后一位1来筛选，把原本的数分成两堆，一堆里有数字1（这一位是1），另一堆里有数字2（这一位是0），用异或把这两个数字挑出来
+     我只能说铁服了这个思路。。虽然负数的位运算还是没搞懂
+*/
+ class Solution
+{
+public:
+    vector<int> singleNumber(vector<int>& nums) 
+    {
+        // Pass 1 : 
+        // Get the XOR of the two numbers we need to find
+        int diff = accumulate(nums.begin(), nums.end(), 0, bit_xor<int>());
+        // Get its last set bit; 留下最后边的1
+        diff &= ~(diff - 1); //diff &= -diff; 
+
+        // Pass 2 :
+        vector<int> rets = {0, 0}; // this vector stores the two numbers we will return
+        for (int num : nums)
+        {
+            if ((num & diff) == 0) // the bit is not set 用最后一位1来筛选，把原本的数分成两堆，一堆里这一位是1，一堆里这一位是0
+            {
+                rets[0] ^= num;
+            }
+            else // the bit is set
+            {
+                rets[1] ^= num;
+            }
+        }
+        return rets;
+    }
+};
