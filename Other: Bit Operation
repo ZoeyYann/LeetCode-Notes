@@ -26,3 +26,17 @@ public:
         return ret;
     }
 };
+4.Repeated DNA Sequences
+//思路：把每个字母对应的ASCII 码的最后3 bit拼到一起 （先用&7截取最后三位） 再用移位或
+// 滚动。
+vector<string> findRepeatedDnaSequences(string s) {
+    unordered_map<int, int> m;
+    vector<string> r;
+    int t = 0, i = 0, ss = s.size();
+    while (i < 9)
+        t = t << 3 | s[i++] & 7;
+    while (i < ss)
+        if (m[t = t << 3 & 0x3FFFFFFF | s[i++] & 7]++ == 1)
+            r.push_back(s.substr(i - 10, 10));
+    return r;
+}
