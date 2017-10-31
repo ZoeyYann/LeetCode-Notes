@@ -1,0 +1,22 @@
+503. Next Greater Element II
+//Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number 
+//for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array,
+//which means you could search circularly to find its next greater number. If it doesn't exist, output -1 for this number.
+// 思路：用stack 把每一个元素之前比它小的元素全部弹出
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int n=nums.size();
+        vector<int> next(n,-1);
+        stack<int> stk;// stack存储索引
+        for(int i=0;i<n*2;i++){
+            int num=nums[i%n];
+            while(!stk.empty() && num>nums[stk.top()]){
+                next[stk.top()]=num;
+                stk.pop();    //留在stack里的都还没有找到next greatest
+            }
+            if(i<n)  stk.push(i);//后面遍历的一圈只是为了找最大值 不用再入栈
+        }
+        return next;
+    }
+};
