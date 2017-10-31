@@ -1,3 +1,7 @@
+／* General Idea: stack中通常储存的是待处理的结点，每一个结点通常被只被处理一次
+
+*／
+
 503. Next Greater Element II
 //Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number 
 //for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array,
@@ -20,3 +24,71 @@ public:
         return next;
     }
 };
+
+341. Flatten Nested List Iterator
+//思路：类似树的深度遍历过程，如果不是interger，压入栈，记得压入栈的顺序
+Given a nested list of integers, implement an iterator to flatten it.
+Each element is either an integer, or a list -- whose elements may also be integers or other lists.
+
+Example 1:
+Given the list [[1,1],2,[1,1]],
+
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,1,2,1,1].
+
+Example 2:
+Given the list [1,[4,[6]]],
+
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,4,6].
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+class NestedIterator {
+private:stack<NestedInteger> nodes;
+public:
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        int size = nestedList.size();
+        for(int i = size - 1; i >= 0; --i) {
+            nodes.push(nestedList[i]);  //后面的压在栈底
+        }
+    }
+
+    int next() {
+        int result = nodes.top().getInteger();
+        nodes.pop();
+        return result;
+    }
+
+    bool hasNext() {
+       while(!nodes.empty()){
+        NestedInteger topNode=nodes.top();
+        if(topNode.isInteger()) return true; //不要改变栈 等到调用next再返回
+        nodes.pop();
+        vector<NestedInteger>& adjs = topNode.getList(); //类似树往下生长的过程，这里不是二叉树是多叉树
+        int size = adjs.size();
+        for(int i = size - 1; i >= 0; --i) {
+            nodes.push(adjs[i]);
+        }
+       } 
+        return false;
+    }
+};
+
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i(nestedList);
+ * while (i.hasNext()) cout << i.next();
+ */
