@@ -1,5 +1,80 @@
-／* General Idea: stack中通常储存的是待处理的结点，每一个结点通常被只被处理一次
+／* 如果下层(Called Function)会改变上层(Calling Function)的值或者状态，利用stack.top()来改变
+   例子：636. Exclusive Time of Functions 计算下层的interval,下层加上间隔，上层减去相应的间隔
+   394. Decode String 内层字符串的改变会导致上层字符串的改变，只需加到上层字符串的后面即可
+*／
+636. Exclusive Time of Functions
+struct Log {
+    int id;
+    string status;
+    int timestamp;
+};
 
+class Solution {
+public:
+    vector<int> exclusiveTime(int n, vector<string>& logs) {
+        vector<int> times(n, 0);
+        stack<Log> st;
+        for(string log: logs) {
+            stringstream ss(log);
+            string temp, temp2, temp3;
+            getline(ss, temp, ':');
+            getline(ss, temp2, ':');
+            getline(ss, temp3, ':');
+
+            Log item = {stoi(temp), temp2, stoi(temp3)};
+            if(item.status == "start") {
+                st.push(item);
+            } else {
+                assert(st.top().id == item.id);
+
+                int time_added = item.timestamp - st.top().timestamp + 1;
+                times[item.id] += time_added;
+                st.pop();
+
+                if(!st.empty()) {//注意非空
+                    assert(st.top().status == "start");
+                    times[st.top().id] -= time_added;
+                }
+            }
+        }
+
+        return times;
+    }
+};
+394. Decode String
+class Solution {
+public:
+    string decodeString(string s) {
+        int i=0;
+        stack<string> chars;
+        stack<int>nums;
+        int num=0;
+        string res="";
+        for(auto c:s){
+            if(isdigit(c)){
+                num=10*num+(c-'0');
+            }else if(c=='['){
+                chars.push(res); //待处理
+                nums.push(num);
+                num=0;
+                res="";
+            }else if(isalpha(c)){
+                res.push_back(c);
+            }else if(c==']'){
+                int n=nums.top();
+                string tmp="";
+                while(n--) tmp+=res; //res 是当前括号里的字符串，tmp是重复k 次后
+                res=tmp;             
+                res=chars.top()+res;   //当层字符串改变了，上层也改变了，由于遍历顺序是从左到右，只需要加到后面
+                chars.pop(); nums.pop();
+            }        
+    }
+        return res;
+        
+    }
+};
+
+／* General Idea: stack中通常储存的是待处理的结点，每一个结点通常被只被处理一次
 *／
 
 503. Next Greater Element II
@@ -92,3 +167,5 @@ public:
  * NestedIterator i(nestedList);
  * while (i.hasNext()) cout << i.next();
  */
+ 
+ 
