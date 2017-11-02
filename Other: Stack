@@ -2,6 +2,8 @@
    例子：636. Exclusive Time of Functions 计算下层的interval,下层加上间隔，上层减去相应的间隔
    394. Decode String 内层字符串的改变会导致上层字符串的改变，只需加到上层字符串的后面即可
 *／
+／* General Idea: stack中通常储存的是待处理的结点，每一个结点通常被只被处理一次
+*／
 636. Exclusive Time of Functions
 struct Log {
     int id;
@@ -74,9 +76,45 @@ public:
     }
 };
 
-／* General Idea: stack中通常储存的是待处理的结点，每一个结点通常被只被处理一次
-*／
-
+385. Mini Parser
+Given s = "[123,[456,[789]]]",
+Return a NestedInteger object containing a nested list with 2 elements:
+1. An integer containing value 123.
+2. A nested list containing two elements:
+    i.  An integer containing value 456.
+    ii. A nested list with one element:
+         a. An integer containing value 789.      
+/*  和Decode String 不一样！Decode String 在[之前还有别的字符，而这个nested list 直接以'[' 开始
+    如果遇到'['，我们给栈中加上一个空的NestInteger，如果遇到的字符数逗号或者']'，如果i>start，那么我们给栈顶元素调用add来新加一个NestInteger
+*/
+class Solution {
+    //为了防止负数用 substr 不要用整数++
+public:
+    NestedInteger deserialize(string s) {
+        if (s.empty()) return NestedInteger();
+        if (s[0] != '[') return NestedInteger(stoi(s));
+        stack<NestedInteger> st;
+        int start = 1;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '[') {
+                st.push(NestedInteger());
+                start = i + 1;
+            } else if (s[i] == ',' || s[i] == ']') {
+                if (i > start) {
+                    st.top().add(NestedInteger(stoi(s.substr(start, i - start))));
+                }
+                start = i + 1;
+                if (s[i] == ']') {
+                    if (st.size() > 1) {
+                        NestedInteger t = st.top(); st.pop();
+                        st.top().add(t);
+                    }
+                }
+            }
+        }
+        return st.top();
+    }
+};
 503. Next Greater Element II
 //Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number 
 //for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array,
