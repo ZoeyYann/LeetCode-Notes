@@ -31,3 +31,35 @@ public:
         }     
     }
 };
+
+132. Palindrome Partitioning II
+//Given a string s, partition s such that every substring of the partition is a palindrome.
+  Return the minimum cuts needed for a palindrome partitioning of s.
+  For example, given s = "aab",
+  Return 1 since the palindrome partitioning ["aa","b"] could be produced using 1 cut.
+// 这里有两个dp 
+//cutNum[i] 表示字符串s从0到i结尾的字串所需要的最小分割数。
+  如果从j到i为回文的话： cutNum[i] = min( cutNum[i] , cutNum[j] + 1) 
+// 小dp如上题，判断回纹字符串
+class Solution {
+public:
+    int minCut(string s) {
+        vector<vector<int>> dp(s.size(), vector<int>(s.size(), false));
+        vector<int> cutNum(s.size());
+        for(int j=0;j<s.size();j++){
+             cutNum[j]=j; //最大切割数==字符数-1
+            for(int i=0;i<=j;i++){ 
+               dp[i][j]= ( s[i]==s[j] && (j-i<=2 || dp[i+1][j-1]));
+               if(dp[i][j]==true){
+                   if(i==0) 
+                   { cutNum[j]=0; break;} // 等于从0到j是个回纹串，不用切割，直接返回了
+                   else cutNum[j]=min(cutNum[j],cutNum[i-1]+1); // i到j是个回纹串，利用之前的大DP关系 
+                                                                // cutNum[j] = min(cutNum[j], cutNum[i - 1] + 1)
+               }
+            }
+        }
+        return cutNum[s.size()-1];
+    }
+};
+
+
