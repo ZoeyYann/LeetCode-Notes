@@ -1,0 +1,33 @@
+//对于输出 all possible 组合，用dfs(深度遍历)+dp(提高效率)
+For example, given s = "aab",
+return 
+[
+  ["aa","b"],
+  ["a","a","b"]
+]
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> res;
+        vector<vector<int>> dp(s.size(), vector<int>(s.size(), false));
+        for(int j=0;j<s.size();j++)  //先算右边界，因为要保证该次循环之前的循环已经解决了当前问题依赖的子问题
+            for(int i=0;i<=j;i++){ //左边界不能超过右边界
+               dp[i][j]= ( s[i]==s[j] && (j-i<=2 || dp[i+1][j-1])); // <=3个字母的首尾相等的都是palindrome
+            }  //dp表格存储了字符串所有字串是否是palindrome
+        vector<string> path;
+        dfs(0,path,s,res,dp);
+        return res;
+    }
+    void dfs(int index,vector<string> &path,const string& pool,vector<vector<string>> &res,vector<vector<int>> &dp){
+        if(index>= pool.size()) {
+            res.push_back(path);
+            return;
+        }
+        for(int j=index;j<pool.size();j++){
+           if(dp[index][j]){    
+            path.push_back(pool.substr(index,j-index+1));
+            dfs(j+1,path,pool,res,dp);
+            path.pop_back();}
+        }     
+    }
+};
