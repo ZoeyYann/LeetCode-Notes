@@ -1,0 +1,44 @@
+⭐️!判断有向图是否有环的问题
+ 图用一个vector<unordered_set<int>> 表示，相当于邻接链表
+1.BFS 
+  Since pair<int, int> is inconvenient for the implementation of graph algorithms, we first transform it to a graph. 
+  If course u is a prerequisite of course v, we will add a directed edge from node u to node v.
+  思路：首先计算出度，如果不存在出度为0 的结点，肯定有环 返回false
+        如果有出度为0 的结点 也不一定无环，此时删除该点以及与该顶点相关的边，把与这些边相关的顶点的出度减一
+        --为了方便这一步邻接链表用了出度的表现方式！，如果用平常的形式删除这个点以后为了改变相关点的入度得遍历整个邻接链表
+ 2.DFS 
+   用黑白灰方法
+   如果遍历的过程中发现某个节点有一条边指向颜色为灰的节点，那么存在环。
+   class Solution {
+public:
+    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<unordered_set<int>> g= makeGraph(numCourses,prerequisites);
+        vector<bool> black(numCourses,false),gray(numCourses,false);
+        for(int i=0;i<numCourses;i++)
+        {
+            if(!gray[i]&& hasCycle(i,g,black,gray)) return false; //该结点没有被访问过，才继续DFS 利用逻辑短路效应
+        }
+        return true;       
+    }
+    vector<unordered_set<int>> makeGraph(int numCourses, vector<pair<int, int>>& prerequisites){
+        vector<unordered_set<int>> g(numCourses);
+        for(auto pre:prerequisites)
+            g[pre.first].insert(pre.second);
+        return g;     
+    }
+    bool hasCycle(int i,const vector<unordered_set<int>> &g,vector<bool> &black,vector<bool> &gray){
+        gray[i]=true;
+        for(int neighbor:g[i]){
+            if(gray[neighbor] && !black[neighbor]) return true;//灰色结点 说明有环
+            if(!gray[neighbor] && hasCycle(neighbor,g,black,gray)) 
+                return true; //该结点未被访问过 继续dfs看有没有环
+        }
+        black[i]=true;
+        return false;
+    }
+};
+
+  
+  
+
+
