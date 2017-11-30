@@ -10,6 +10,14 @@ Return a deep copy of the list.
                                       node.next.random = node.random.next
              前面是说旧node的next的random，就是新node的random，后面是旧node的random的next，正好是新node，是从旧random复制来的。
 第三遍，则是把新旧两个表拆开，返回新的表即可。
+/**
+ * Definition for singly-linked list with a random pointer.
+ * struct RandomListNode {
+ *     int label;
+ *     RandomListNode *next, *random;
+ *     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
+ * };
+ */
 class Solution {
 public:
     RandomListNode *copyRandomList(RandomListNode *head) {
@@ -33,8 +41,7 @@ public:
         while(iter&&iter->next){
             next=iter->next->next;
             
-            auto copy=iter->next;
-            tail->next=copy;
+            tail->next=iter->next;
             tail=tail->next;     // restore the original list
             
             iter->next=next;
