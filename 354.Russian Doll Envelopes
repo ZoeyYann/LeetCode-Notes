@@ -1,0 +1,30 @@
+widths and heights given as a pair of integers (w, h).
+One envelope can fit into another if and only if both the width and height of one envelope is greater than the width and height of the other envelope.
+//Given envelopes = [[5,4],[6,4],[6,7],[2,3]], the maximum number of envelopes you can Russian doll is 3 ([2,3] => [5,4] => [6,7]).
+//思路
+1.Sort the array. Ascend on width and descend on height if width are same. 
+
+2.Find the longest increasing subsequence based on height.🔥300. Longesr Increasing Subsequences(固定相对位置，这里已经排序好了，适用)
+
+Since the width is increasing, we only need to consider height.
+[3, 4] cannot contains [3, 3], so we need to put [3, 4] before [3, 3] when sorting 
+otherwise it will be counted as an increasing number if the order is [3, 3], [3, 4] 🔥这样就会有重复宽度的信封
+具体代码如下：
+class Solution { //如果只有w或者h 直接上greedy，但是你考虑了w h 不一定满足 参考300 LIS（保持原有顺序）
+public:
+    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+        sort(envelopes.begin(),envelopes.end(),cmp);
+        vector<int> res;//   res存放height
+        for(auto env:envelopes){ //每次迭代等于在更新res
+            auto it= lower_bound(res.begin(),res.end(),env.second); 
+            if(it==res.end()) res.push_back(env.second);
+            else 
+                *it=env.second;
+        }
+        return res.size();
+    }
+    static bool cmp(pair<int, int> pair1,pair<int, int> pair2){
+        if(pair1.first==pair2.first) return pair1.second>pair2.second;
+        else return pair1.first<pair2.first;
+    }
+};
